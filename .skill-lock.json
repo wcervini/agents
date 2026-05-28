@@ -1,0 +1,217 @@
+{
+  "version": 3,
+  "skills": {
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "skillFolderHash": "190395c0dca241d4edfe36e585373e68ae7fbfa6",
+      "installedAt": "2026-03-08T22:18:21.914Z",
+      "updatedAt": "2026-04-01T02:21:32.941Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "c2f31172b6f256272305a5e6e7228b258446899f",
+      "installedAt": "2026-03-08T22:18:28.357Z",
+      "updatedAt": "2026-03-08T22:18:28.357Z"
+    },
+    "api-documentation": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/api-documentation/SKILL.md",
+      "skillFolderHash": "30b43b9e9419447ffca648f4e7846700380f357b",
+      "installedAt": "2026-03-08T22:19:51.498Z",
+      "updatedAt": "2026-03-08T22:19:51.498Z"
+    },
+    "api-design": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/api-design/SKILL.md",
+      "skillFolderHash": "a42d80f3e578cd6091d67527e491916f9e6c935e",
+      "installedAt": "2026-03-08T22:20:44.614Z",
+      "updatedAt": "2026-03-08T22:20:44.614Z"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supabase/agent-skills.git",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "skillFolderHash": "95fe6d29daaf88aa9bc3b505ca4defe19ceabf92",
+      "pluginName": "postgres-best-practices",
+      "installedAt": "2026-03-08T22:21:20.981Z",
+      "updatedAt": "2026-03-08T22:21:20.981Z"
+    },
+    "security-best-practices": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/security-best-practices/SKILL.md",
+      "skillFolderHash": "355916565c001feeda735a54f8a78edfc103a33a",
+      "installedAt": "2026-03-08T22:22:04.261Z",
+      "updatedAt": "2026-03-08T22:22:04.261Z"
+    },
+    "git-workflow": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/git-workflow/SKILL.md",
+      "skillFolderHash": "cc1011b48b3211134e5a206e27f96cdc4bdb494e",
+      "installedAt": "2026-03-08T22:24:25.751Z",
+      "updatedAt": "2026-03-08T22:24:25.751Z"
+    },
+    "agent-browser": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/agent-browser/SKILL.md",
+      "skillFolderHash": "c630055dc8ea093e121268a267b7615c061c146e",
+      "installedAt": "2026-03-08T22:26:28.237Z",
+      "updatedAt": "2026-03-08T22:28:09.968Z"
+    },
+    "changelog-maintenance": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supercent-io/skills-template.git",
+      "skillPath": ".agent-skills/changelog-maintenance/SKILL.md",
+      "skillFolderHash": "1c4dcce51c7ce712130e961672df3a440a54f1e8",
+      "installedAt": "2026-03-08T22:28:35.644Z",
+      "updatedAt": "2026-03-08T22:28:35.644Z"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "skillFolderHash": "928950704df8a8b885c03de5da626331e6f29cf8",
+      "pluginName": "example-skills",
+      "installedAt": "2026-03-17T10:33:54.578Z",
+      "updatedAt": "2026-03-17T10:33:54.578Z"
+    },
+    "interface-design": {
+      "source": "dammyjay93/interface-design",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/dammyjay93/interface-design.git",
+      "skillPath": ".claude/skills/interface-design/SKILL.md",
+      "skillFolderHash": "3c1c18ac9f9732a8be68cb8504bf234fdafcf5c8",
+      "installedAt": "2026-03-31T08:07:44.687Z",
+      "updatedAt": "2026-04-01T02:20:58.941Z"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "skillFolderHash": "53bdaa7bc95ff9bebdfdde4093a2b7ef34f54c15",
+      "installedAt": "2026-03-31T08:09:30.047Z",
+      "updatedAt": "2026-03-31T08:09:30.047Z"
+    },
+    "changelog-generator": {
+      "source": "composiohq/awesome-claude-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/composiohq/awesome-claude-skills.git",
+      "skillPath": "changelog-generator/SKILL.md",
+      "skillFolderHash": "72258d6496ccd708fb946591d944282d6de03f13",
+      "installedAt": "2026-04-01T02:23:28.972Z",
+      "updatedAt": "2026-04-01T02:23:28.972Z"
+    },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "skillFolderHash": "f260c775073816860fef8a37c032ac77e2ff5821",
+      "installedAt": "2026-04-01T02:29:30.465Z",
+      "updatedAt": "2026-04-01T02:29:30.465Z"
+    },
+    "writing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/writing-plans/SKILL.md",
+      "skillFolderHash": "704e240d4b281baf8a339e1418baa249860197f7",
+      "installedAt": "2026-04-01T02:32:38.380Z",
+      "updatedAt": "2026-04-01T02:32:38.380Z"
+    },
+    "programmatic-seo": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
+      "skillPath": "skills/programmatic-seo/SKILL.md",
+      "skillFolderHash": "ebd45df541268af6df1eef6855731b57fe09deb2",
+      "pluginName": "marketing-skills",
+      "installedAt": "2026-04-01T02:33:53.249Z",
+      "updatedAt": "2026-04-01T02:33:53.249Z"
+    },
+    "seo-audit": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
+      "skillPath": "skills/seo-audit/SKILL.md",
+      "skillFolderHash": "d333a589b3cd513296c419ee6911903be8c9865b",
+      "installedAt": "2026-04-01T02:34:43.159Z",
+      "updatedAt": "2026-04-26T02:15:30.328Z"
+    },
+    "astro": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mindrally/skills.git",
+      "skillPath": "astro/SKILL.md",
+      "skillFolderHash": "19f2564cfb81210f4053ee33ed4e8a3d9a0dee1f",
+      "installedAt": "2026-04-26T00:56:44.179Z",
+      "updatedAt": "2026-04-26T00:59:20.187Z"
+    },
+    "astro-framework": {
+      "source": "delineas/astro-framework-agents",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/delineas/astro-framework-agents.git",
+      "skillPath": "skills/astro-framework/SKILL.md",
+      "skillFolderHash": "033abe0f8e724a2ee746db9f03526ea7d15d969b",
+      "installedAt": "2026-04-26T00:58:01.164Z",
+      "updatedAt": "2026-04-26T00:58:01.164Z"
+    },
+    "audit-website": {
+      "source": "squirrelscan/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/squirrelscan/skills.git",
+      "skillPath": "audit-website/SKILL.md",
+      "skillFolderHash": "ec491d7739b80f4c64126ae674384cbbcac953ae",
+      "installedAt": "2026-04-26T01:10:17.897Z",
+      "updatedAt": "2026-04-26T01:23:18.464Z"
+    },
+    "modern-web-guidance": {
+      "source": "GoogleChrome/modern-web-guidance",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/GoogleChrome/modern-web-guidance.git",
+      "skillPath": "skills/modern-web-guidance/SKILL.md",
+      "skillFolderHash": "8729a5e725e655ba8688a93828e03131fb13857e",
+      "installedAt": "2026-05-20T19:56:12.431Z",
+      "updatedAt": "2026-05-20T19:56:12.431Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "dexto",
+    "firebender",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-cli",
+    "opencode",
+    "warp",
+    "windsurf",
+    "codestudio"
+  ]
+}
