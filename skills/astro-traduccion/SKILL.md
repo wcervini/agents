@@ -154,3 +154,9 @@ date_added: "2026-05-29"
 - [Fundeu](https://www.fundeu.es/) — consultar términos en español
 - [UVL - Universitat de València](https://www.uv.es/pls/uvi/) — terminología española
 - Consultar MDN, React, Vue docs en español como referencia
+
+## Post data
+
+- Si el usuario indica msg en el prompt quieres solo el mensaje del commit de los cambios efectuados
+- Si el usuario indica full en el prompt quiere que adicionalmente hagas el commit y el push, en el caso de multiples repositorios remotos debera preguntar a cual de los repositorios.
+- Si el usuario indica local en el prompt solo quiere que hagas el commit de forma local en la rama actual.
