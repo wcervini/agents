@@ -102,3 +102,5 @@ guidelines from CHANGELOG_STYLE.md
 - Generating email updates for users
 - Creating social media announcement posts
 
+##Additional information
+**More info on** https://keepachangelog.com/en/1.1.0/

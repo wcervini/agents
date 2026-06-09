@@ -1,7 +1,7 @@
 ---
-name: local-docs-context
+name: ldc
 description: |
-  Lee documentación local de Astro (español) y Tailwind CSS desde el disco para responder consultas con información actualizada offline.
+  Lee documentación local de Astro y Tailwind CSS desde E:\Docs para responder consultas con información actualizada offline.
 
   Activar cuando el usuario pregunte sobre:
   - Astro, componentes Astro, islands, content collections, directivas, enrutamiento, SSR, adaptadores, view transitions, sesiones, actions, middleware, i18n, `astro:env`, `server:defer`
@@ -13,13 +13,13 @@ description: |
   - CSS genérico sin relación con Tailwind
 ---
 
-# Documentación Local de Astro (ES) y Tailwind CSS
+# Documentación Local de Astro y Tailwind CSS
 
 ## Ubicaciones
 
-### Astro Docs (Español)
+### Astro Docs
 ```
-C:\Users\Underghround\Desktop\astro-docs\src\content\docs\es\
+E:\Docs\astro\
 ├── basics/           → conceptos fundamentales
 ├── concepts/         → why-astro, islands, hydration, routing, ssg, ssr
 ├── guides/           → actions, images, styling, sessions, view-transitions, etc.
@@ -37,10 +37,8 @@ C:\Users\Underghround\Desktop\astro-docs\src\content\docs\es\
 
 ### Tailwind CSS Docs
 ```
-C:\Users\Underghround\Desktop\tailwindcss.com\src\docs\
-├── img/               → imágenes
-├── utils/             → utilidades (colores, etc.)
-├── [197+ archivos .mdx] → cada utility class, guía y referencia
+E:\Docs\tailwind\
+├── [200+ archivos .mdx] → cada utility class, guía y referencia
 ```
 
 ## Flujo de trabajo
@@ -56,14 +54,12 @@ Para encontrar el archivo adecuado dentro de la documentación local:
 
 ### Astro
 ```powershell
-# Buscar por palabra clave en la documentación de Astro
-Get-ChildItem -Path "C:\Users\Underghround\Desktop\astro-docs\src\content\docs\es" -Recurse -Filter "*.mdx" | Select-String -Pattern "<término>"
+Get-ChildItem -Path "E:\Docs\astro" -Recurse -Filter "*.mdx" | Select-String -Pattern "<término>"
 ```
 
 ### Tailwind CSS
 ```powershell
-# Buscar por palabra clave en la documentación de Tailwind
-Get-ChildItem -Path "C:\Users\Underghround\Desktop\tailwindcss.com\src\docs" -Filter "*.mdx" | Select-String -Pattern "<término>"
+Get-ChildItem -Path "E:\Docs\tailwind" -Recurse -Filter "*.mdx" | Select-String -Pattern "<término>"
 ```
 
 ## Reglas
@@ -77,7 +73,7 @@ Get-ChildItem -Path "C:\Users\Underghround\Desktop\tailwindcss.com\src\docs" -Fi
 
 ## Temas principales cubiertos
 
-### Astro (Español)
+### Astro
 - Instalación, configuración, CLI
 - Islands architecture, directivas `client:*`, `server:defer`
 - Content Collections / Content Layer API

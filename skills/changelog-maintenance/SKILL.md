@@ -3,7 +3,7 @@ name: changelog-maintenance
 description: Maintain a clear and informative changelog for software releases. Use when documenting version changes, tracking features, or communicating updates to users. Handles semantic versioning, changelog formats, and release notes.
 metadata:
   tags: changelog, release-notes, versioning, semantic-versioning, documentation
-  platforms: Claude, ChatGPT, Gemini
+  platforms: Claude, ChatGPT, Gemini, Opencode Zen
 ---
 
 
@@ -284,6 +284,7 @@ docs/migration/
 1. **Keep a Changelog**: follow the standard format
 2. **Semantic Versioning**: consistent version management
 3. **Breaking Changes**: provide a migration guide
+4. **Keep a 
 
 ## References
 

@@ -158,13 +158,13 @@
       "updatedAt": "2026-04-26T02:15:30.328Z"
     },
     "astro": {
-      "source": "mindrally/skills",
+      "source": "astrolicious/agent-skills",
       "sourceType": "github",
-      "sourceUrl": "https://github.com/mindrally/skills.git",
-      "skillPath": "astro/SKILL.md",
-      "skillFolderHash": "19f2564cfb81210f4053ee33ed4e8a3d9a0dee1f",
+      "sourceUrl": "https://github.com/astrolicious/agent-skills.git",
+      "skillPath": "skills/astro/SKILL.md",
+      "skillFolderHash": "81d96cec5008970ed8fbecb23f7fb48536102b84",
       "installedAt": "2026-04-26T00:56:44.179Z",
-      "updatedAt": "2026-04-26T00:59:20.187Z"
+      "updatedAt": "2026-06-09T04:32:02.419Z"
     },
     "astro-framework": {
       "source": "delineas/astro-framework-agents",
@@ -192,6 +192,15 @@
       "skillFolderHash": "8729a5e725e655ba8688a93828e03131fb13857e",
       "installedAt": "2026-05-20T19:56:12.431Z",
       "updatedAt": "2026-05-20T19:56:12.431Z"
+    },
+    "htmx": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mindrally/skills.git",
+      "skillPath": "htmx/SKILL.md",
+      "skillFolderHash": "c2e40b71da494a1b59e4bcaa30a3d599e651423b",
+      "installedAt": "2026-06-09T04:30:57.258Z",
+      "updatedAt": "2026-06-09T04:30:57.258Z"
     }
   },
   "dismissed": {
@@ -200,18 +209,17 @@
   "lastSelectedAgents": [
     "amp",
     "antigravity",
+    "antigravity-cli",
     "cline",
     "codex",
     "cursor",
     "deepagents",
-    "dexto",
-    "firebender",
     "gemini-cli",
     "github-copilot",
-    "kimi-cli",
+    "kimi-code-cli",
     "opencode",
     "warp",
-    "windsurf",
+    "zed",
     "codestudio"
   ]
 }
