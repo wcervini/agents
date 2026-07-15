@@ -150,14 +150,16 @@ PATCH (1.1.1 → 1.1.2): Backward-compatible bug fixes
 - `1.0.1` → `1.1.0`: new feature
 - `1.1.0` → `2.0.0`: Breaking change
 
+> **⚠️ No package.json?** If the project doesn't have a `package.json`, omit `npm version` and create the tag directly with `git tag -a`. Versioning is handled via git tags and `CHANGELOG.md` alone.
+
 ### Step 4: Release
 
 ```bash
-# 1. Update version in package.json
-npm version patch  # or minor, major
-
-# 2. Create git tag
+# 1. Create git tag (works for any project)
 git tag -a v1.2.0 -m "Release v1.2.0"
+
+# Optional: if package.json exists, bump version automatically
+# npm version patch  # or minor, major
 
 # 3. Push commits and tags
 git push origin main --tags
@@ -405,7 +407,7 @@ git log v1.0.0..HEAD --oneline --no-merges
 **Step 3** — Execute release commands:
 
 ```bash
-npm version major
+git tag -a v2.0.0 -m "Release v2.0.0"
 git push origin main --tags
 gh release create v2.0.0 --title "Release v2.0.0" --notes-file RELEASES.md
 ```

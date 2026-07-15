@@ -112,6 +112,16 @@ feat!: remove support for Node 16
 
 ## Instructions
 
+### Prerequisites
+
+- ✅ **Verify existing git repository**: Before any git operation, confirm that a `.git` directory exists. Running `git init` in an existing repo destroys its entire history. To verify:
+
+  ```bash
+  git rev-parse --git-dir 2>/dev/null || echo "Not a git repository"
+  ```
+
+  If it returns `.git`, the repo exists. If it returns "Not a git repository", then run `git init`.
+
 ### Step 1: Generate commit with MCP
 
 Run the MCP tool `auto-commit_git-changes-commit-message`:
