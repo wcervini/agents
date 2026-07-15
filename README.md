@@ -11,7 +11,7 @@ Skills personalizadas para el agente **opencode** que uso para agilizar procesos
 | [astro-traduccion](skills/astro-traduccion/SKILL.md) | Traducción al español de la documentación de Astro con glosario y convenciones oficiales |
 | [changelog-generator](skills/changelog-generator/SKILL.md) | Genera changelogs automáticos desde commits en lenguaje amigable para usuarios |
 | [changelog-maintenance](skills/changelog-maintenance/SKILL.md) | Mantenimiento de changelogs con versionado semántico y formatos estandarizados |
-| [commit (cc)](skills/commit/SKILL.md) | Commits convencionales (Conventional Commits) con estructura `tipo(scope): descripción` |
+| [commit (cc)](skills/commit/SKILL.md) | Commits convencionales con gitmoji: `✨ tipo(scope): descripción` — incluye referencia de 75 gitmojis |
 | [htmx](skills/htmx/SKILL.md) | Desarrollo de apps dinámicas con HTMX: atributos, peticiones AJAX, manipulación DOM |
 | [javascript-best-practices](skills/javascript-best-practices/SKILL.md) | Buenas prácticas, patrones y clean code para JavaScript y TypeScript |
 | [ldc](skills/local-docs-context/SKILL.md) | Consulta documentación local de Astro y Tailwind CSS offline |
