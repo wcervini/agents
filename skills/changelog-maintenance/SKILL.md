@@ -13,6 +13,7 @@ metadata:
 ## When to use this skill
 
 - **Before release**: organize changes before shipping a version
+- **During release**: execute git tags, push, and GitHub releases
 - **Continuous**: update whenever significant changes occur
 - **Migration guide**: document breaking changes
 
@@ -105,7 +106,24 @@ Initial release
 [1.0.0]: https://github.com/username/repo/releases/tag/v1.0.0
 ```
 
-### Step 2: Semantic Versioning
+### Step 2: Generate changelog from commits
+
+Use the MCP tool `auto-commit_git-changes-commit-message` or run:
+
+```bash
+# Last 7 days
+git log --since="7 days ago" --oneline
+
+# Since last tag
+git log $(git describe --tags --abbrev=0)..HEAD --oneline
+
+# By date range
+git log --after="2025-01-01" --before="2025-01-15" --oneline
+```
+
+Filter internal commits (refactor, test, chore) and transform into user-facing language.
+
+### Step 3: Semantic Versioning
 
 **Version number**: `MAJOR.MINOR.PATCH`
 
@@ -132,7 +150,25 @@ PATCH (1.1.1 → 1.1.2): Backward-compatible bug fixes
 - `1.0.1` → `1.1.0`: new feature
 - `1.1.0` → `2.0.0`: Breaking change
 
-### Step 3: Release Notes (user-friendly)
+### Step 4: Release
+
+```bash
+# 1. Update version in package.json
+npm version patch  # or minor, major
+
+# 2. Create git tag
+git tag -a v1.2.0 -m "Release v1.2.0"
+
+# 3. Push commits and tags
+git push origin main --tags
+
+# 4. Create GitHub release (requires gh CLI)
+gh release create v1.2.0 \
+  --title "Release v1.2.0" \
+  --notes-file RELEASE_NOTES.md
+```
+
+### Step 5: Release Notes (user-friendly)
 
 ```markdown
 # Release Notes v1.2.0
@@ -185,7 +221,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete details.
 **Upgrade Instructions**: [docs/upgrade-to-v1.2.md](docs/upgrade-to-v1.2.md)
 ```
 
-### Step 4: Breaking Changes migration guide
+### Step 6: Breaking Changes migration guide
 
 ```markdown
 # Migration Guide: v1.x to v2.0
@@ -284,7 +320,7 @@ docs/migration/
 1. **Keep a Changelog**: follow the standard format
 2. **Semantic Versioning**: consistent version management
 3. **Breaking Changes**: provide a migration guide
-4. **Keep a 
+4. **Keep a deprecation timeline**: announce features before removing them
 
 ## References
 
@@ -303,8 +339,99 @@ docs/migration/
 
 ## Examples
 
-### Example 1: Basic usage
-<!-- Add example content here -->
+### Example 1: Basic usage — From commits to changelog
 
-### Example 2: Advanced usage
-<!-- Add advanced example content here -->
+**Given** these commits since the last release:
+
+```
+feat(api): add paginated users endpoint
+fix(auth): resolve token refresh race condition
+docs(readme): update installation guide
+chore: bump lodash to 4.17.21
+refactor(db): extract query builder
+```
+
+**Generated CHANGELOG entry**:
+
+```markdown
+## [1.1.0] - 2025-03-15
+
+### Added
+- Paginated users endpoint (`GET /api/users?page=1&limit=20`)
+
+### Fixed
+- Token refresh race condition in authentication flow
+
+### Documentation
+- Installation guide updated with Docker setup steps
+```
+
+> Internal commits (refactor, chore, style) are filtered out — only user-facing changes appear in the changelog.
+
+---
+
+### Example 2: Advanced usage — Full release workflow
+
+**Complete pipeline** from commits to GitHub release:
+
+**Step 1** — Review commits since last tag:
+
+```bash
+git log v1.0.0..HEAD --oneline --no-merges
+```
+
+**Step 2** — Generate CHANGELOG.md categorizing by type:
+
+```markdown
+## [2.0.0] - 2025-06-01
+
+### Added
+- Two-factor authentication (2FA)
+- Export user data feature (GDPR compliance)
+
+### Changed
+- Authentication now uses JWT tokens instead of Basic Auth
+
+### Deprecated
+- `GET /api/v1/users/list` (use `GET /api/v2/users` instead)
+
+### Removed
+- Legacy Basic Authentication method
+
+### Security
+- Updated dependencies (fixes CVE-2025-12345)
+```
+
+**Step 3** — Execute release commands:
+
+```bash
+npm version major
+git push origin main --tags
+gh release create v2.0.0 --title "Release v2.0.0" --notes-file RELEASES.md
+```
+
+**Step 4** — Write user-friendly release notes (RELEASES.md):
+
+```markdown
+# Release v2.0.0 — June 1, 2025
+
+## 🎉 What's New
+- **2FA**: Enhanced account security with two-factor authentication
+- **Data Export**: Download your data anytime in JSON format
+
+## ⚠️ Breaking Changes
+- Basic Auth removed — migrate to JWT tokens (see migration guide)
+
+## 🔒 Security
+- Critical dependency vulnerabilities resolved
+```
+
+**Step 5** — Create migration guide for breaking changes:
+
+```markdown
+# Migration Guide: v1.x to v2.0
+
+## Authentication
+**Before**: `Authorization: Basic base64(user:pass)`
+**After**: JWT token via `POST /api/auth/login`
+```
