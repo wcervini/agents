@@ -1,155 +1,139 @@
 ---
 name: commits
-description: Generates commit messages using MCP auto-commit with gitmoji and Conventional Commits.
+description: Genera mensajes de commit con gitmoji y Conventional Commits usando un agente.
 metadata:
-  tags: git, conventional-commits, gitmoji, mcp, frontend-architect, version-control
+  tags: git, conventional-commits, gitmoji, mcp, version-control
   platforms: OpenCode, Claude, Gemini, ChatGPT, VSCode
 ---
 
-# Conventional Commits Architect with Gitmoji
+# Conventional Commits Architect con Gitmoji
 
-## When to use this skill
+## Cuándo usarlo
 
-- **Before committing**: When you need to generate an automated commit message.
-- **Git workflow standardization**: To ensure consistent commits with gitmoji and Conventional Commits.
-- **MCP integration**: Uses the auto-commit MCP to generate messages with AI.
+- **Antes de un commit**: Para generar mensajes de commit estandarizados.
+- **Estandarización del flujo Git**: Commits consistentes con gitmoji + Conventional Commits.
+- **Agent workflow**: Usa un agente para generar mensajes de commit con IA.
 
-## MCP Integration
+## Agente
 
-This skill uses the MCP server `auto-commit` which:
-1. Analyzes changes with `git diff`
-2. Generates messages with gitmoji using OpenCode Zen
-3. Executes `git commit` automatically
+Usa un agente integrado (auto-commit) que:
+1. Analiza cambios con `git diff` o contexto proporcionado
+2. Genera mensajes con gitmoji
+3. Proporciona el mensaje al usuario para confirmación
+4. El usuario verifica y ejecuta `git commit` manualmente
 
-**Available MCP tool:** `auto-commit_git-changes-commit-message`
-- Parameter: `autoCommitPath` (optional) - path to analyze
-- If not provided, uses the current directory
+## Especificación
 
-## Specification
-
-### Required Structure
+### Estructura obligatoria
 
 ```
-<gitmoji> <type>[optional scope]: <description>
+<gitmoji> <tipo>(<ámbito>): <descripción>
 
-[optional body]
+[cuerpo opcional]
 
-[optional footer]
+[pie opcional]
 ```
 
-### Commit Types
+### Tipos de commit
 
-| Type       | Description                                                               |
-| ---------- | ------------------------------------------------------------------------- |
-| `feat`     | A new feature for the user                                                |
-| `fix`      | A bug fix that affects the user                                           |
-| `docs`     | Documentation only changes                                                |
-| `style`    | Changes that do not affect code meaning (formatting, whitespace, etc.)    |
-| `refactor` | Code refactoring that neither fixes a bug nor adds a feature              |
-| `perf`     | Changes that improve performance                                          |
-| `test`     | Adding or correcting tests                                                |
-| `build`    | Changes affecting the build system or dependencies                        |
-| `ci`       | Changes to CI configuration files and scripts                             |
-| `chore`    | Other changes that do not modify src or test files                        |
+| Tipo       | Descripción                                                    |
+| ---------- | -------------------------------------------------------------- |
+| `feat`     | Nueva característica para el usuario                           |
+| `fix`      | Corrección de errores                                          |
+| `docs`     | Solo documentación                                             |
+| `style`    | Cambios que no afectan el significado (formato, espacios, etc) |
+| `refactor` | Refactorización que no agrega feature ni corrige bug           |
+| `perf`     | Cambios que mejoran rendimiento                                |
+| `test`     | Añadir o corregir pruebas                                      |
+| `build`    | Cambios en sistema de compilación o dependencias               |
+| `ci`       | Cambios en configuración de CI                                 |
+| `chore`    | Otros cambios que no modifican src o tests                     |
 
-### Description Rules
+### Reglas de descripción
 
-1. **Gitmoji required** at the beginning of the first line (e.g.: `✨`, `🐛`, `📝`)
-2. **Maximum 50 characters** recommended for the first line (hard limit: 72, both excluding the gitmoji)
-3. **No period at the end**
-4. **Use imperative mood**: "add feature" not "added feature" / "adds feature"
-5. **Do not capitalize** the first letter
-6. **No semicolon** at the end
+1. **Gitmoji obligatorio** al inicio (✨, 🐛, 📝, etc.)
+2. **Máximo 50 caracteres** recomendado (límite: 72, sin contar el gitmoji)
+3. **Sin punto al final**
+4. **Modo imperativo**: "add feature", no "added feature" ni "adds feature"
+5. **Sin mayúscula inicial**
 
-### Scope
+### Ámbito (obligatorio)
 
-The scope is optional and identifies the section of the affected codebase:
+Identifica la sección de la base de código afectada:
 
 ```
-feat(auth): add OAuth2 login
-fix(api): resolve race condition in user endpoint
-docs(readme): update installation instructions
+✨ feat(auth): add OAuth2 login
+🐛 fix(api): resolve race condition in user endpoint
+📝 docs(readme): update installation instructions
 ```
 
-**Common scopes**:
+**Ámbitos comunes**: `api`, `ui`, `db`, `auth`, `config`, `build`, `deps`, `docs`, `tests` o nombres específicos del proyecto.
 
-- `api`, `ui`, `db`, `auth`, `config`, `build`, `deps`, `docs`, `tests`
-- Project-specific module names
+### Cuerpo
 
-### Body
+- Separar con línea en blanco después de la descripción
+- Máximo 72 caracteres por línea
+- Explicar **qué** y **por qué**, no **cómo**
+- Usar viñetas con `-` para múltiples líneas
 
-- Separate with a blank line after the description
-- Maximum 72 characters per line
-- Explain **what** and **why**, not **how**
-- Use bullet points with `-` for multiple lines
+### Pie
 
-### Footer
-
-- Separate with a blank line after the body
-- Reference issues and PRs:
-  - `Closes #123`
-  - `Fixes #456`
-  - `Refs #789`
-- List breaking changes:
-  - `BREAKING CHANGE: remove deprecated API`
+- Separar con línea en blanco después del cuerpo
+- Referenciar issues/PRs: `Closes #123`, `Fixes #456`, `Refs #789`
+- Breaking changes: `BREAKING CHANGE: descripción`
 
 ### Breaking Changes
 
-**Method 1** (in footer):
+**Método 1** (en el pie):
 
 ```
-BREAKING CHANGE: the authentication API now requires a JWT token.
-Migration: update calls to /api/v2/auth.
+BREAKING CHANGE: la API de autenticación ahora requiere JWT.
+Migración: actualizar llamadas a /api/v2/auth.
 ```
 
-**Method 2** (in type/scope):
+**Método 2** (en tipo/ámbito):
 
 ```
-feat!: remove support for Node 16
+💥 feat(api)!: remove support for Node 16
 ```
 
 ---
 
-## Instructions
+## Instrucciones
 
-### Prerequisites
+### Prerrequisitos
 
-- ✅ **Verify existing git repository**: Before any git operation, confirm that a `.git` directory exists. Running `git init` in an existing repo destroys its entire history. To verify:
+- ✅ Verificar que existe el repo: `git rev-parse --git-dir 2>/dev/null`
 
-  ```bash
-  git rev-parse --git-dir 2>/dev/null || echo "Not a git repository"
-  ```
+### Paso 1: Generar mensaje con MCP
 
-  If it returns `.git`, the repo exists. If it returns "Not a git repository", then run `git init`.
-
-### Step 1: Generate commit with MCP
-
-Run the MCP tool `auto-commit_git-changes-commit-message`:
+1. **Analiza los cambios** con `git diff --staged` o el contexto proporcionado.
+2. **Propón el mensaje al usuario** mostrando el formato completo (gitmoji, tipo, ámbito, descripción).
+3. **Espera confirmación explícita** antes de ejecutar. Si el usuario acepta, ejecuta:
 
 ```
-Usage: auto-commit_git-changes-commit-message
-Parameter autoCommitPath: (optional) specific path or empty for current directory
+auto-commit_git-changes-commit-message
 ```
 
-The MCP will return:
-- List of modified, added, and deleted files
-- A commit message with gitmoji in conventional commits format
-- The commit is executed automatically
+> ⚠️ **Nunca ejecutes el MCP auto-commit sin confirmación explícita del usuario**, incluso si el mensaje parece correcto.
 
-### Step 2: Verify the result
+### Paso 2: Verificar resultado
 
-The generated message must comply with:
-- ✅ Gitmoji emoji at the start (✨, 🐛, 📝, ♻️, 🔧, etc.)
-- ✅ Correct type (feat, fix, docs, refactor, etc.)
-- ✅ Maximum 50 characters recommended (hard limit: 72) in the first line
-- ✅ No period at the end
-- ✅ Imperative mood ("add" not "added")
+El mensaje debe cumplir:
+- ✅ Gitmoji al inicio
+- ✅ Tipo correcto (feat, fix, etc.)
+- ✅ Ámbito presente
+- ✅ Máximo 72 caracteres en la primera línea
+- ✅ Sin punto final
+- ✅ Modo imperativo
 
-## Examples
+---
 
-### Example 1: New feature
+## Ejemplos
 
-**Diff**: Adds `/api/users` endpoint with pagination.
+### Ejemplo 1: Nueva funcionalidad
+
+**Diff**: Añade endpoint `/api/users` con paginación.
 
 ```
 ✨ feat(api): add paginated users endpoint
@@ -162,9 +146,9 @@ The generated message must comply with:
 Closes #234
 ```
 
-### Example 2: Bug fix
+### Ejemplo 2: Corrección de bug
 
-**Diff**: Fixes memory leak in the job worker.
+**Diff**: Corrige fuga de memoria en el worker de trabajos.
 
 ```
 🐛 fix(worker): resolve memory leak in job processor
@@ -175,24 +159,12 @@ Now properly cleans up all listeners after each job.
 Fixes #567
 ```
 
-### Example 3: Refactoring
+### Ejemplo 3: Breaking change
 
-**Diff**: Extracts authentication logic to a dedicated module.
-
-```
-♻️ refactor(auth): extract auth logic to dedicated module
-
-- Move token validation from controller to AuthService
-- Add refresh token rotation
-- Reduce cognitive complexity by 40%
-```
-
-### Example 4: Breaking change
-
-**Diff**: Removes legacy v1 API.
+**Diff**: Elimina API v1 legacy.
 
 ```
-💥 feat!: remove deprecated v1 API endpoints
+💥 feat(api): remove deprecated v1 API endpoints
 
 BREAKING CHANGE: All /api/v1/* endpoints removed.
 Migration guide: see docs/migration-v2.md
@@ -200,69 +172,9 @@ Migration guide: see docs/migration-v2.md
 Closes #890
 ```
 
-### Example 5: Documentation only
+### Ejemplo 4: Revertir cambios
 
-**Diff**: Updates README with new installation instructions.
-
-```
-📝 docs(readme): update installation instructions
-
-- Add Docker setup steps
-- Include environment variables reference
-- Fix outdated npm commands
-```
-
-### Example 6: Dependency changes
-
-**Diff**: Upgrades Express from 4.x to 5.x.
-
-```
-⬆️ build(deps): upgrade Express to v5
-
-- Migrate to async handlers
-- Update middleware signatures
-- Required for Node 20+ compatibility
-```
-
-### Example 7: CI fix
-
-**Diff**: Fixes GitHub Actions pipeline.
-
-```
-👷 ci: fix test runner timeout
-
-- Increase timeout from 2min to 5min for integration tests
-- Add retry logic for flaky tests
-- Update Node version matrix
-```
-
-### Example 8: General maintenance
-
-**Diff**: Cleans up old console.log statements and unused imports.
-
-```
-🧹 chore: remove debug logs and unused imports
-
-- Remove console.log statements from payment module
-- Clean up unused lodash imports
-- Sort Tailwind CSS class order
-```
-
-### Example 9: Code style
-
-**Diff**: Formats codebase with Prettier and reorganizes imports.
-
-```
-🎨 style: format codebase with Prettier
-
-- Apply consistent indentation across all files
-- Reorder imports alphabetically
-- Add trailing commas to function params
-```
-
-### Example 10: Revert changes
-
-**Diff**: Reverts a faulty deployment that caused production issues.
+**Diff**: Revierte un deploy fallido.
 
 ```
 ⏪️ revert: rollback user profile feature
@@ -275,77 +187,62 @@ Fixes #892
 
 ---
 
-## Quick Reference Card
+## Referencia Rápida
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  <gitmoji> type(scope): description                     │
-│                                                         │
-│  [optional body]                                        │
-│                                                         │
-│  [optional footer: Closes #N, BREAKING CHANGE: ...]     │
-└─────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│  ✨ <tipo>(<ámbito>): <descripción>                    │
+│                                                        │
+│  [cuerpo opcional]                                     │
+│                                                        │
+│  [pie opcional: Closes #N, BREAKING CHANGE: ...]       │
+└────────────────────────────────────────────────────────┘
 
-feat     → New feature
-fix      → Bug fix
-docs     → Documentation
-style    → Formatting (not logic)
-refactor → Code restructuring
-perf     → Performance
-test     → Tests
-build    → Build/dependencies
-ci       → CI/CD
-chore    → General maintenance
+✨ feat(scope)     → Nueva funcionalidad
+🐛 fix(scope)     → Corrección de bug
+📝 docs(scope)    → Documentación
+🎨 style(scope)   → Formato
+♻️ refactor(scope) → Refactorización
+⚡️ perf(scope)    → Rendimiento
+✅ test(scope)    → Tests
+⬆️ build(scope)   → Dependencias
+👷 ci(scope)      → CI/CD
+🧹 chore(scope)   → Mantenimiento
+⏪️ revert(scope)  → Reversión
 
-Atomic commits: one type, one purpose
+Commits atómicos: un tipo, un propósito. Ámbito obligatorio.
 ```
 
 ---
 
-## Anti-Patterns (avoid)
+## Anti-Patrones (evitar)
 
-❌ `Fixed the bug`
-❌ `Updated code`
-❌ `WIP`
-❌ `asdasdasd`
-❌ `feat: Add new feature for the user`
-❌ `fix: Fixed critical issue in the system.`
+❌ `Fixed the bug` — no sigue formato
+❌ `✨ feat: add feature` — falta ámbito
+❌ `feat: Add new feature` — falta gitmoji, mayúscula incorrecta
 
-✅ `✨ feat(auth): add JWT refresh token rotation`
+✅ `✨ feat(api): add JWT refresh token rotation`
 ✅ `🐛 fix(api): resolve race condition in user endpoint`
-✅ `📝 docs: update API documentation`
+✅ `📝 docs(readme): update API documentation`
 
 ---
 
-## Related Tools
+## Referencia de Gitmojis
 
-- **commitlint**: Validates commit messages against Conventional Commits rules. Useful as a git hook to enforce consistency.
-- **commitizen**: Interactive CLI that helps craft Conventional Commits with prompts for type, scope, and description.
-- **standard-version**: Automates version bumping and changelog generation from Conventional Commits.
-- **semantic-release**: Fully automated package publishing — analyzes commits to determine version bumps and generates release notes.
-- **husky** + **lint-staged**: Pair used to run commitlint and other validators as git hooks before each commit.
+Ver lista completa en [references/GITMOJI.md](references/GITMOJI.md).
 
----
+| Emoji | Tipo    | Descripción               |
+|-------|---------|---------------------------|
+| ✨     | feat    | Nueva funcionalidad       |
+| 🐛     | fix     | Corrección de bug         |
+| 📝     | docs    | Documentación             |
+| ♻️     | refactor| Refactorización           |
+| 🎨     | style   | Formato                   |
+| ⚡️    | perf    | Rendimiento               |
+| ✅     | test    | Tests                     |
+| 🔧     | chore   | Configuración             |
+| 👷     | ci      | CI/CD                     |
+| 💥     | feat!   | Breaking change           |
+| ⏪️    | revert  | Reversión                 |
 
-## Gitmoji Reference
-
-Commits must start with the corresponding emoji. See the full list in [references/GITMOJI.md](references/GITMOJI.md).
-
-**Most common gitmojis:**
-
-| Emoji | Code | Type | Description |
-|-------|------|------|-------------|
-| ✨ | `:sparkles:` | feat | Introduce new features |
-| 🐛 | `:bug:` | fix | Fix a bug |
-| 📝 | `:memo:` | docs | Add or update documentation |
-| ♻️ | `:recycle:` | refactor | Refactor code |
-| 🎨 | `:art:` | style | Improve structure / format |
-| ⚡️ | `:zap:` | perf | Improve performance |
-| ✅ | `:white_check_mark:` | test | Add or pass tests |
-| 🔧 | `:wrench:` | chore | Add or update configuration |
-| 👷 | `:construction_worker:` | ci | Add or update CI build system |
-| 🔥 | `:fire:` | - | Remove code or files |
-| 💥 | `:boom:` | feat! | Introduce breaking changes |
-| ⏪️ | `:rewind:` | revert | Revert changes |
-
-More info on [gitmoji.dev](https://gitmoji.dev)
+Más info en [gitmoji.dev](https://gitmoji.dev)
