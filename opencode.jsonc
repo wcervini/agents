@@ -1,5 +1,6 @@
 {
   "$schema": "./schemas/opencode-config.json",
+  "plugin": [],
   "provider": {
     "minimax": {
       "models": {
@@ -37,15 +38,24 @@
         }
       }
     },
-    "llamacpp": {
+    "ollama": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "LlamaCpp",
+      "name": "Ollama",
       "options": {
-        "baseURL": "http://localhost:8080/v1"
+        "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "qwen2.5-coder-3b-instruct-q4_k_m.gguf": {
-          "name": "Qwen 2.5 Coder 3B"
+        "qwen2.5-coder:1.5b": {
+          "name": "Qwen 2.5 Coder 1.5B"
+        },
+        "qwen2.5-coder:7b": {
+          "name": "Qwen 2.5 Coder 7B"
+        },
+        "llama3.2:3b": {
+          "name": "Llama 3.2 3B"
+        },
+        "llama3.1:8b": {
+          "name": "Llama 3.1 8B"
         }
       }
     }
@@ -53,7 +63,7 @@
   "permission": {
     "read": "allow",
     "lsp": "allow",
-    "edit": "ask",
+    "edit": "deny",
     "glob": "allow",
     "grep": "allow",
     "bash": "allow",
@@ -73,7 +83,7 @@
       "url": "https://mcp.context7.com/mcp",
       "enabled": true,
       "headers": {
-        "CONTEXT7_API_KEY": "ctx7sk-ed073409-71d2-4d59-b41e-66f77ea5e78c"
+        "X-Context7-API-Key": "{env:CONTEXT7_API_KEY}"
       }
     },
     "Astro docs": {
@@ -99,5 +109,5 @@
     }
   },
 
-  "disabled_providers": ["llamacpp"]
+  "disabled_providers": []
 }
