@@ -1,7 +1,6 @@
 ---
 description: General security specialist for code review, dependency auditing, configuration hardening, and security best practices across the entire stack.
-mode: all
-model: deepseek/deepseek-v4-flash
+mode: subagent
 temperature: 0.2
 tools:
   write: false

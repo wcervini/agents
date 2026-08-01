@@ -1,5 +1,5 @@
 ---
-name: ldc
+name: local-docs-context
 description: |
   Lee documentación local de Astro y Tailwind CSS desde E:\Docs para responder consultas con información actualizada offline.
 
