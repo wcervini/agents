@@ -1,0 +1,113 @@
+{
+  "$schema": "./schemas/opencode-config.json",
+  "plugin": [],
+  "provider": {
+    "minimax": {
+      "models": {
+        "minimax/MiniMax-M2.7": {
+          "name": "MiniMax"
+        }
+      }
+    },
+    "openrouter": {
+      "models": {
+        "deepseek/deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash"
+        },
+        "deepseek/deepseek-r1": {
+          "name": "DeepSeek R1"
+        },
+        "z-ai/glm-5.2": {
+          "name": "GLM 5.2"
+        },
+        "qwen/qwen3-coder:free": {
+          "name": "Qwen 3 Coder (free)"
+        }
+      }
+    },
+    "opencode-zen": {
+      "models": {
+        "GPT 5.3 Codex": {
+          "name": "GPT 5.3 Codex"
+        },
+        "opencode-go/qwen-3-coder-480b": {
+          "name": "Qwen 3 Coder 480B"
+        },
+        "opencode-go/Qwen3.5 Plus": {
+          "name": "Qwen 3.5 Plus"
+        }
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder:1.5b": {
+          "name": "Qwen 2.5 Coder 1.5B"
+        },
+        "qwen2.5-coder:7b": {
+          "name": "Qwen 2.5 Coder 7B"
+        },
+        "llama3.2:3b": {
+          "name": "Llama 3.2 3B"
+        },
+        "llama3.1:8b": {
+          "name": "Llama 3.1 8B"
+        }
+      }
+    }
+  },
+  "permission": {
+    "read": "allow",
+    "lsp": "allow",
+    "edit": "deny",
+    "glob": "allow",
+    "grep": "allow",
+    "bash": "allow",
+    "task": "ask",
+    "skill": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "codesearch": "allow",
+    "external_directory": "allow",
+    "todowrite": "allow",
+    "doom_loop": "ask"
+  },
+  "lsp": true,
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "enabled": true,
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-ed073409-71d2-4d59-b41e-66f77ea5e78c"
+      }
+    },
+    "Astro docs": {
+      "type": "remote",
+      "url": "https://mcp.docs.astro.build/mcp",
+      "enabled": true
+    },
+// "auto-commit": {
+//     "type": "local",
+//     "command": [
+//       "node",
+//       "/home/underghround/project/mcp-server-auto-commit/build/index.js"
+//     ],
+//     "enabled": true,
+//     "environment": {
+//       "OPENCODE_API_KEY": "{env:OPENCODE_API_KEY}"
+//     }
+//   },
+    "Tailwindcss": {
+      "type": "local",
+      "command": ["npx", "-y", "tailwindcss-mcp-server"],
+      "enabled": true
+    }
+  },
+
+  "disabled_providers": []
+}
