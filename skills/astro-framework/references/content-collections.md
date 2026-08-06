@@ -106,7 +106,21 @@ const blog = defineCollection({
 });
 ```
 
-Options: `pattern`, `base`, `generateId()` (custom ID generation), `retainBody` (set `false` to exclude raw body).
+Options: `pattern`, `base`, `generateId()` (custom ID generation), `retainBody` (set `false` to exclude raw body), `deferRender` (Astro 7.1+).
+
+#### `deferRender` (Astro 7.1+)
+
+By default, `glob()` renders each Markdown entry eagerly during content sync and stores the HTML in the data store. For very large collections this can exhaust memory. Set `deferRender: true` to defer rendering until each entry is rendered in a page (the same on-demand path MDX uses). This bounds memory during `astro build` at the cost of no longer caching the rendered HTML. Does not apply to MDX, Markdoc, or data entries.
+
+```typescript
+const docs = defineCollection({
+  loader: glob({
+    pattern: '**/*.md',
+    base: './src/data/docs',
+    deferRender: true,
+  }),
+});
+```
 
 ### `file()` — Single file
 
@@ -166,21 +180,108 @@ function myLoader(options: { url: string }): Loader {
 }
 ```
 
-## Live Loaders (Astro 6+)
+### LoaderContext helpers
 
-Live loaders fetch data fresh on every request — no data store to update. Use for real-time data:
+The `load` method receives a `LoaderContext` with useful helpers:
+
+| Helper | Description |
+|--------|-------------|
+| `store` | The data store (`clear()`, `set()`, `get()`, `values()`) |
+| `meta` | Key/value metadata store for incremental updates |
+| `parseData({ id, data })` | Validates data against the collection schema |
+| `generateDigest(data)` | Generates a non-cryptographic content digest to track changes |
+| `watch` | File watcher for dev-mode reloads |
+| `logger` | Logger scoped to the loader (`logger.info(...)`) |
+| `config` | The resolved Astro config |
 
 ```typescript
+import type { Loader } from 'astro/loaders';
+
+function feedLoader({ url }: { url: string }): Loader {
+  return {
+    name: 'feed-loader',
+    load: async ({ store, logger, parseData, generateDigest }) => {
+      logger.info('Loading posts');
+      const feed = await loadFeed(url);
+      store.clear();
+
+      for (const item of feed.items) {
+        const data = await parseData({ id: item.guid, data: item });
+        const digest = generateDigest(data);
+        store.set({ id: item.guid, data, digest });
+      }
+    },
+  };
+}
+```
+
+## Live Loaders (Astro 6+)
+
+Live collections fetch data fresh on every request — no data store to update. Use for real-time data.
+
+### Configuration file: `src/live.config.ts`
+
+Live collections are defined in `src/live.config.ts` (separate from `src/content.config.ts`) using `defineLiveCollection()` from `astro:content`:
+
+```typescript
+// src/live.config.ts
+import { defineLiveCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { productLoader } from './loaders/product-loader';
+
+const products = defineLiveCollection({
+  loader: productLoader({ apiKey: process.env.STORE_API_KEY }),
+  // Optional: a Zod schema takes precedence over the loader's types
+  schema: z.object({
+    id: z.string(),
+    name: z.string(),
+    price: z.number(),
+  }),
+});
+
+export const collections = { products };
+```
+
+> **Note:** Live collections require an adapter (on-demand rendering). There are no built-in live loaders — you must create a custom one.
+
+### Creating a live loader
+
+A live loader implements `loadCollection()` and `loadEntry()` (instead of `load`) and returns data directly. Use the generic type `LiveLoader<TData, TEntryFilter, TCollectionFilter, TError>`:
+
+```typescript
+// src/loaders/product-loader.ts
 import type { LiveLoader } from 'astro/loaders';
 
-function productLoader(config: { apiKey: string }): LiveLoader<Product> {
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+}
+
+interface EntryFilter {
+  id: string;
+}
+
+interface CollectionFilter {
+  category?: string;
+}
+
+export function productLoader(config: { apiKey: string }): LiveLoader<
+  Product,
+  EntryFilter,
+  CollectionFilter
+> {
   return {
     name: 'product-loader',
     loadCollection: async ({ filter }) => {
-      const data = await fetchProducts(config.apiKey, filter);
-      return {
-        entries: data.map(p => ({ id: p.sku, data: p })),
-      };
+      try {
+        const data = await fetchProducts(config.apiKey, filter);
+        return {
+          entries: data.map((p) => ({ id: p.sku, data: p })),
+        };
+      } catch (error) {
+        return { error: new Error('Failed to load products', { cause: error }) };
+      }
     },
     loadEntry: async ({ filter }) => {
       const product = await fetchProduct(config.apiKey, filter.id);
@@ -191,7 +292,11 @@ function productLoader(config: { apiKey: string }): LiveLoader<Product> {
 }
 ```
 
-Query live collections with `getLiveCollection()` and `getLiveEntry()`:
+Generic parameters (in order): `TData` (entry data, default `Record<string, unknown>`), `TEntryFilter` (default `never`), `TCollectionFilter` (default `never`), `TError` (custom `Error` subclass, default `Error`).
+
+### Querying live collections
+
+Query with `getLiveCollection()` and `getLiveEntry()`:
 
 ```astro
 ---
@@ -201,6 +306,48 @@ const { entries, error } = await getLiveCollection('products');
 const { entry, error: entryError } = await getLiveEntry('products', 'sku-123');
 ---
 ```
+
+### Live loader errors
+
+Errors thrown in a live loader are caught and wrapped in `LiveCollectionError`. Astro also generates:
+
+- `LiveEntryNotFoundError` — when `loadEntry` returns `undefined`
+- `LiveCollectionValidationError` — when data does not match the collection schema
+- `LiveCollectionCacheHintError` — when a loader returns an invalid cache hint
+
+```astro
+---
+import { LiveCollectionValidationError } from 'astro/content/runtime';
+import { getLiveEntry } from 'astro:content';
+
+const { entry, error } = await getLiveEntry('products', '123');
+if (LiveCollectionValidationError.is(error)) {
+  console.error(error.message);
+  return Astro.rewrite('/500');
+}
+---
+```
+
+### Caching live data (Astro 7)
+
+Live loaders can return a `cacheHint` (with `tags` and `lastModified`). Pass it to `Astro.cache.set()` to apply the loader's recommended caching strategy:
+
+```astro
+---
+import { getLiveEntry } from 'astro:content';
+
+const { entry, error, cacheHint } = await getLiveEntry('products', Astro.params.id);
+if (error) return Astro.redirect('/404');
+
+if (cacheHint) {
+  Astro.cache.set(cacheHint);
+}
+Astro.cache.set({ maxAge: 300 });
+---
+<h1>{entry.data.name}</h1>
+```
+
+You can also pass a `LiveDataEntry` directly to `Astro.cache.set()` to extract its `cacheHint` automatically, and invalidate by entry with `context.cache.invalidate(entry)`.
 
 ## Collection Types (Legacy — Astro 4)
 

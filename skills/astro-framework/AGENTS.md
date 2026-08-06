@@ -1,6 +1,6 @@
 # Astro Framework Cheatsheet
 
-**Version:** 2.0.0 | **Astro 5.x** | **Updated:** 2026-03-22 | **Author**: [webreactiva.com](https://webreactiva.com/ia)
+**Version:** 3.0.0 | **Astro 7.x** | **Updated:** 2026-08-06 | **Author**: [webreactiva.com](https://webreactiva.com/ia)
 
 ---
 
@@ -21,6 +21,9 @@
 | **i18n** | Use `getRelativeLocaleUrl()` for links, never hardcode locale prefixes |
 | **TypeScript** | Extend `astro/tsconfigs/strict`; define path aliases; type `App.Locals` in `src/env.d.ts` |
 | **API routes** | Export named handlers (`GET`, `POST`, etc.) typed as `APIRoute` |
+| **Security** | `security.csp` for CSP; `checkOrigin` guards CSRF; `allowedDomains` blocks host injection; body limits protect actions/server islands |
+| **Caching** | `cache: { provider: memoryCache() }` + `routeRules` (Astro 7); guard `cache.set()`/`invalidate()` behind `cache.enabled` |
+| **Advanced routing** | `src/fetch.ts` overrides the request pipeline; `astro/fetch` handlers + `FetchState` (Astro 7) |
 
 ---
 
@@ -70,6 +73,10 @@ Neither? ──> Static .astro component
 - **NEVER** skip `slot="fallback"` on `server:defer` components
 - **NEVER** use `any` — use `unknown` and narrow
 - **NEVER** import Zod from `zod` — use `astro/zod` (Astro 5+)
+- **NEVER** call `Astro.cache.invalidate()`/`cache.set()` without checking `cache.enabled` (throws/`warns` without a provider)
+- **NEVER** use `<ClientRouter />` (view transitions) or Shiki with `security.csp` enabled — incompatible
+- **NEVER** disable `security.checkOrigin` on public on-demand forms — it provides CSRF protection
+- **NEVER** keep `src/fetch.ts` for non-routing code in Astro 7 — it's a reserved entrypoint (`fetchFile: null` to disable)
 
 ---
 
@@ -107,6 +114,36 @@ Neither? ──> Static .astro component
 
 - `defineAction` from `astro:actions` with `astro/zod` schemas
 
+## Astro 6+ / Astro 7 Notes (Post-Training Knowledge)
+
+### Live Loaders (Astro 6+)
+
+- Live collections live in `src/live.config.ts` (NOT `src/content.config.ts`) using `defineLiveCollection()` from `astro:content`
+- Live loaders implement `loadCollection()` / `loadEntry()` (not `load`); return data directly, no data store
+- Query with `getLiveCollection()` / `getLiveEntry()`; requires an adapter (on-demand rendering)
+- Type with `LiveLoader<TData, TEntryFilter, TCollectionFilter, TError>`; errors: `LiveCollectionError`, `LiveEntryNotFoundError`, `LiveCollectionValidationError`
+- Live loaders can return a `cacheHint` (tags + lastModified) — pass it to `Astro.cache.set()` (Astro 7)
+
+### Security (Astro 6+)
+
+- `security.csp` (boolean | object): `algorithm`, `directives`, `scriptDirective`/`styleDirective` with `resources`/`hashes`/`kind`, `strictDynamic`
+- CSP is incompatible with `<ClientRouter />` and Shiki; not supported in `dev` mode
+- `security.checkOrigin` (default `true`) — CSRF protection for on-demand forms
+- `security.allowedDomains` — validates `X-Forwarded-Host` to block host header injection
+- `security.actionBodySizeLimit` (default 1 MB) and `security.serverIslandBodySizeLimit` (default 1 MB)
+
+### Route Caching (Astro 7)
+
+- Enable with `cache: { provider: memoryCache() }`; set defaults via `routeRules: { '/path': { maxAge, swr } }`
+- `Astro.cache` / `context.cache`: `set()`, `invalidate()`, `enabled`, `options`, `tags`
+- CDN providers per adapter: `cacheNetlify()` (`@astrojs/netlify/cache`), `cacheVercel()` (`@astrojs/vercel/cache`), `cacheCloudflare()` (`@astrojs/cloudflare/cache`)
+
+### Advanced Routing (Astro 7)
+
+- `src/fetch.ts` (default-export `{ fetch(request) }`) replaces the default request pipeline
+- Handlers from `astro/fetch`: `astro`, `actions`, `cache`, `i18n`, `middleware`, `pages`, `redirects`, `sessions`, `trailingSlash`; state via `new FetchState(request)`
+- Hono middleware available from `astro/hono`; rename/disable entrypoint with `fetchFile`
+
 ## Key Patterns (Brief)
 
 - **Component structure:** imports, `interface Props`, destructure with defaults, logic, template, scoped `<style>`
@@ -120,4 +157,4 @@ Neither? ──> Static .astro component
 
 Deep-dive docs with full code examples live in `references/`:
 
-`actions.md` `client-directives.md` `components.md` `configuration.md` `content-collections.md` `environment-variables.md` `i18n-routing.md` `images.md` `middleware.md` `routing.md` `server-islands.md` `sessions.md` `ssr-adapters.md` `styling.md` `view-transitions.md`
+`actions.md` `advanced-routing.md` `caching.md` `client-directives.md` `components.md` `configuration.md` `content-collections.md` `environment-variables.md` `i18n-routing.md` `images.md` `middleware.md` `routing.md` `security.md` `server-islands.md` `sessions.md` `ssr-adapters.md` `styling.md` `view-transitions.md`

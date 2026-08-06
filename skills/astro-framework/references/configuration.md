@@ -309,6 +309,8 @@ const base = import.meta.env.BASE_URL;  // From astro.config base
 ---
 ```
 
+> **Astro 6+ behavior:** `import.meta.env` values are **always inlined** as their literal string value — they are **never converted** to other types. There is no coercion of `"true"` → boolean, no numeric conversion, and no replacement from `process.env` at runtime. Read values as strings and parse them yourself when you need a typed value (or use `astro:env` with `envField` for typed, validated variables).
+
 ### Type-Safe Environment (Astro 5+)
 
 ```javascript
@@ -376,6 +378,8 @@ export default defineConfig({
 ```
 
 > **Note:** Server islands (`server:defer`) are stable since Astro 5 — no experimental flag needed.
+>
+> **Astro 7:** Queued rendering is **enabled by default** (no `experimental.queuedRendering` flag needed), and the `logger` is a stable top-level option. The obsolete experimental flags `logger`, `queuedRendering`, `rustCompiler`, `advancedRouting`, and `cache` have been **removed** — these features are now stable or configured via their dedicated top-level options (`cache: {...}`, `fetchFile`, etc.).
 
 ## Full Example
 

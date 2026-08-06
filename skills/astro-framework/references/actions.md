@@ -375,6 +375,132 @@ if (result?.data?.redirect) {
 ---
 ```
 
+## Calling Actions via fetch (getActionPath)
+
+`getActionPath()` (Astro 5.1+) returns the URL path for an action so you can call it with `fetch()` directly and provide custom headers:
+
+```astro
+<script>
+  import { actions, getActionPath } from 'astro:actions';
+
+  await fetch(getActionPath(actions.like), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer YOUR_TOKEN',
+    },
+    body: JSON.stringify({ id: 'YOUR_ID' }),
+    keepalive: true,
+  });
+</script>
+```
+
+## ActionReturnType
+
+`ActionReturnType` extracts the output type from an action handler (unwraps `Promise` and `ReturnType`):
+
+```astro
+---
+import { actions, type ActionReturnType } from 'astro:actions';
+
+type ContactResult = ActionReturnType<typeof actions.contact>;
+---
+```
+
+## React: withState() and getActionState()
+
+The `@astrojs/react` integration provides `withState()` and `getActionState()` for use with React's `useActionState()` hook.
+
+`withState()` wraps an action so it works as a React form action while preserving progressive enhancement:
+
+```tsx
+// Like.tsx
+import { actions } from 'astro:actions';
+import { withState } from '@astrojs/react/actions';
+import { useActionState } from 'react';
+
+export function Like({ postId }: { postId: string }) {
+  const [state, action, pending] = useActionState(
+    withState(actions.like),
+    { data: 0, error: undefined },
+  );
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="postId" value={postId} />
+      <button disabled={pending}>{state.data} ❤️</button>
+    </form>
+  );
+}
+```
+
+`getActionState()` reads the state stored by `useActionState()` on the server inside your action handler:
+
+```typescript
+// src/actions/index.ts
+import { defineAction } from 'astro:actions';
+import { z } from 'astro/zod';
+import { getActionState } from '@astrojs/react/actions';
+
+export const server = {
+  like: defineAction({
+    input: z.object({ postId: z.string() }),
+    handler: async ({ postId }, ctx) => {
+      const { data: currentLikes = 0, error } = await getActionState(ctx);
+      if (error) throw error;
+      return currentLikes + 1;
+    },
+  }),
+};
+```
+
+## Security When Using Actions
+
+Actions are accessible as public endpoints based on their name (e.g. `blog.like()` → `/_actions/blog.like`). You **must** apply the same authorization checks you would for API endpoints.
+
+### Authorize from the action handler
+
+Add an authentication check in the handler and raise `ActionError` with `UNAUTHORIZED` when unauthorized:
+
+```typescript
+export const server = {
+  getUserSettings: defineAction({
+    handler: async (_input, context) => {
+      if (!context.locals.user) {
+        throw new ActionError({ code: 'UNAUTHORIZED' });
+      }
+      return { /* data on success */ };
+    },
+  }),
+};
+```
+
+### Gate actions from middleware with getActionContext()
+
+Use `getActionContext()` in middleware to inspect inbound action requests, including `calledFrom` (`'rpc'` for client-side function calls, `'form'` for HTML form actions):
+
+```typescript
+// src/middleware.ts
+import { defineMiddleware } from 'astro:middleware';
+import { getActionContext } from 'astro:actions';
+
+export const onRequest = defineMiddleware(async (context, next) => {
+  const { action } = getActionContext(context);
+
+  // Gate client-side RPC calls behind a session token
+  if (action?.calledFrom === 'rpc') {
+    if (!context.cookies.has('user-session')) {
+      return new Response('Forbidden', { status: 403 });
+    }
+  }
+
+  context.cookies.set('user-session', 'session-token-value');
+  return next();
+});
+```
+
+`getActionContext()` also returns `setActionResult()` and `serializeActionResult()` to programmatically persist action results (e.g. the POST/Redirect/GET pattern with a session).
+
 ## Best Practices
 
 1. **Use Zod for validation** - Type-safe input handling

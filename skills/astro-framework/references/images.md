@@ -218,8 +218,10 @@ Supported output formats:
 - `avif` (best compression, slower)
 - `png` (lossless)
 - `jpg`/`jpeg` (lossy)
-- `svg` (pass-through, no optimization)
+- `svg` (pass-through by default, **rasterized since Astro 6 when `format` is set**)
 - `gif` (pass-through)
+
+> **SVG behavior (Astro 6+):** The Sharp image service **rasterizes SVG** when you specify a `format` other than `svg` (e.g. `format="webp"`). Without a fixed `format`, SVG input passes through unoptimized. Use a raster `format` deliberately when you need PNG/WebP output from an SVG source.
 
 ```astro
 <Image src={photo} alt="Photo" format="avif" quality={60} />

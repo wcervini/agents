@@ -4,9 +4,9 @@ description: Astro framework specialist for building fast, content-driven websit
 license: MIT
 metadata:
   author: delineas
-  version: "2.0.0"
+  version: "3.0.0"
   category: framework
-  tags: astro, islands, ssr, ssg, content-collections, content-layer, view-transitions, server-islands, sessions, i18n, actions, astro-env
+  tags: astro, islands, ssr, ssg, content-collections, content-layer, live-loaders, view-transitions, server-islands, sessions, i18n, actions, astro-env, security, csp, caching, advanced-routing
 ---
 
 # Astro Framework Specialist
@@ -34,6 +34,9 @@ Activate this skill when:
 - Optimizing images and performance
 - Configuring `astro.config.mjs`
 - Building live data collections with Live Loaders
+- Configuring security (CSP, origin checks, body size limits)
+- Implementing route caching (`Astro.cache`, route rules, CDN providers)
+- Customizing the request pipeline with advanced routing (`src/fetch.ts`)
 
 ## Core Workflow
 
@@ -144,6 +147,9 @@ Load detailed guidance based on your current task:
 | Configuration | [references/configuration.md](references/configuration.md) | `astro.config.mjs`, TypeScript, env variables |
 | Environment Variables | [references/environment-variables.md](references/environment-variables.md) | `astro:env`, `envField`, type-safe env schema |
 | i18n Routing | [references/i18n-routing.md](references/i18n-routing.md) | Multilingual sites, locales, `astro:i18n` helpers |
+| Security | [references/security.md](references/security.md) | CSP config, `checkOrigin`, `allowedDomains`, body size limits |
+| Caching | [references/caching.md](references/caching.md) | `Astro.cache`, `cache.set`/`invalidate`, route rules, CDN providers |
+| Advanced Routing | [references/advanced-routing.md](references/advanced-routing.md) | `src/fetch.ts`, `astro/fetch`, `astro/hono`, `FetchState` |
 
 ## Guidelines by Context
 
@@ -158,6 +164,8 @@ Context-specific rules are available in the `rules/` directory:
 - `rules/astro-typescript.rule.md` → TypeScript configuration
 - `rules/server-islands.rule.md` → Server island patterns and `server:defer`
 - `rules/sessions.rule.md` → Server-side session management
+- `rules/security.rule.md` → Security configuration (CSP, origin checks, limits)
+- `rules/caching.rule.md` → Route caching (cache API, route rules, providers)
 
 ## Critical Rules
 
@@ -176,6 +184,9 @@ Context-specific rules are available in the `rules/` directory:
 - Use `Astro.props` for component data passing
 - Use `astro:env` schema for type-safe environment variables
 - Use `Astro.session` for server-side state management
+- Guard `Astro.cache.set()` / `cache.invalidate()` behind `Astro.cache.enabled`
+- Configure `security.csp` with hashes for third-party scripts/styles (Astro 6+)
+- Enable route caching via `cache: { provider: memoryCache() }` + `routeRules` (Astro 7)
 
 ### MUST NOT DO
 
@@ -190,6 +201,8 @@ Context-specific rules are available in the `rules/` directory:
 - Pass functions as props to `server:defer` components (not serializable)
 - Access `Astro.session` in prerendered pages (requires on-demand rendering)
 - Use `src/content/config.ts` for new projects (use `src/content.config.ts` with loaders)
+- Use `<ClientRouter />` or Shiki when `security.csp` is enabled (incompatible)
+- Call `Astro.cache.invalidate()` without a configured cache provider (throws)
 
 ## Quick Reference
 
@@ -273,4 +286,4 @@ When implementing Astro features, provide:
 
 ## Technologies
 
-Astro 5+/6+, Islands Architecture, Content Layer API (glob/file loaders, live loaders), Zod Schemas, View Transitions API, Server Islands (`server:defer`), Sessions, Actions, Middleware, astro:env (type-safe environment variables), i18n Routing, Adapters (Node, Vercel, Netlify, Cloudflare, Deno), React/Vue/Svelte/Solid integrations, Image Optimization, MDX, Markdoc, TypeScript, Scoped CSS, Tailwind CSS
+Astro 7, Islands Architecture, Content Layer API (glob/file loaders, live loaders), Live Collections (`src/live.config.ts`), Zod Schemas, View Transitions API, Server Islands (`server:defer`), Sessions, Actions, Middleware, Security (CSP, origin checks, body limits), Route Caching (`Astro.cache`, CDN providers), Advanced Routing (`src/fetch.ts`, `astro/fetch`, `astro/hono`), astro:env (type-safe environment variables), i18n Routing, Adapters (Node, Vercel, Netlify, Cloudflare, Deno), React/Vue/Svelte/Solid integrations, Image Optimization, MDX, Markdoc, TypeScript, Scoped CSS, Tailwind CSS

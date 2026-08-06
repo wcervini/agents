@@ -283,6 +283,64 @@ await Astro.session?.set('lastVisit', new Date());
 
 See [references/sessions.md](sessions.md) for full details.
 
+## Security (SSR)
+
+Security options apply to on-demand rendered pages. Configure them under `security` in `astro.config.mjs`:
+
+```javascript
+// astro.config.mjs
+export default defineConfig({
+  output: 'server',
+  security: {
+    checkOrigin: true, // CSRF protection for on-demand forms (default)
+    allowedDomains: [
+      { hostname: '**.example.com', protocol: 'https' },
+    ],
+    actionBodySizeLimit: 10 * 1024 * 1024, // 10 MB for action bodies
+    serverIslandBodySizeLimit: 10 * 1024 * 1024, // 10 MB for server islands
+  },
+});
+```
+
+- `checkOrigin` (default `true`) — validates the `origin` header against the request URL to prevent CSRF on `POST`/`PATCH`/`DELETE`/`PUT` form requests
+- `allowedDomains` — validates `X-Forwarded-Host` against allowed host patterns to prevent host header injection
+- `actionBodySizeLimit` (default 1 MB) — max action request body size
+- `serverIslandBodySizeLimit` (default 1 MB) — max server island request body size
+
+See [references/security.md](security.md) for full details including CSP.
+
+## Route Caching (Astro 7)
+
+Enable route caching for SSR responses with a cache provider and route rules:
+
+```javascript
+// astro.config.mjs
+import { defineConfig, memoryCache } from 'astro/config';
+
+export default defineConfig({
+  output: 'server',
+  cache: {
+    provider: memoryCache(),
+  },
+  routeRules: {
+    '/blog/[...path]': { maxAge: 300, swr: 60 },
+  },
+});
+```
+
+Control caching per-request with `Astro.cache` (pages) or `context.cache` (API routes/middleware):
+
+```astro
+---
+export const prerender = false;
+if (Astro.cache.enabled) {
+  Astro.cache.set({ maxAge: 120, swr: 60, tags: ['home'] });
+}
+---
+```
+
+CDN providers are available per adapter: `cacheNetlify()` (`@astrojs/netlify/cache`), `cacheVercel()` (`@astrojs/vercel/cache`), `cacheCloudflare()` (`@astrojs/cloudflare/cache`). See [references/caching.md](caching.md) for full details.
+
 ## API Endpoints
 
 ### GET, POST, PUT, DELETE

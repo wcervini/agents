@@ -14,6 +14,8 @@ globs:
 ```json
 {
   "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -26,9 +28,13 @@ globs:
 }
 ```
 
+The `include` array must reference Astro's auto-generated types (`.astro/types.d.ts`) plus your source files, and `exclude` should skip the build output (`dist`) so generated files are not type-checked.
+
 ## MUST DO
 
 - Use `astro/tsconfigs/strict` or `strictest` preset
+- Set `include` to `[".astro/types.d.ts", "**/*"]` — picks up Astro-generated types for collections, actions, and env
+- Set `exclude` to `["dist"]` — don't type-check build output
 - Define path aliases for cleaner imports
 - Type Props interface in all components
 - Type locals in `src/env.d.ts`
@@ -40,6 +46,7 @@ globs:
 - Skip typing Props interface
 - Ignore TypeScript errors
 - Use `astro/tsconfigs/base` in production projects
+- Type-check the `dist` output folder
 
 ## Component Props
 

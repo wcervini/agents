@@ -40,6 +40,32 @@ const posts = await getCollection('blog');
 </style>
 ```
 
+## Rust Compiler (Astro 7)
+
+Astro 7 compiles `.astro` files with a Rust-based compiler that enforces **strict HTML**. Unlike the legacy compiler, it does **not** autocorrect malformed markup:
+
+- **All tags must be properly closed** — void elements (`<img>`, `<input>`, `<br>`, `<meta>`, `<link>`, etc.) are the only exception
+- **No auto-closing or tag fixing** — Astro will not silently repair unclosed or mismatched tags; it errors instead
+- **Strict nesting** — mismatched or misnested tags produce compile errors rather than being tolerated
+
+```astro
+<!-- MUST: close every non-void tag -->
+<div>
+  <p>Content</p>
+</div>
+
+<!-- MUST: void elements stay self-closing -->
+<img src={hero} alt="Hero" />
+<input type="text" name="email" />
+```
+
+```astro
+<!-- NEVER: unclosed or mismatched tags -->
+<div>
+  <p>Content
+</div>
+```
+
 ## MUST DO
 
 - Define `interface Props` for type safety
@@ -57,6 +83,7 @@ const posts = await getCollection('blog');
 - Forget alt text on images
 - Use inline styles when scoped styles work
 - Skip TypeScript interfaces for Props
+- Leave tags unclosed or mismatched — the Rust compiler (Astro 7) does not autocorrect HTML
 
 ## Slots Pattern
 
