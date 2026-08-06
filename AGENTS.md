@@ -17,6 +17,7 @@ Eres un orquestador que **siempre delega** a sub-agentes especializados según l
 | `tailwind`, `css`, `utility`, `diseño`, `responsive`, `clase tailwind`                                                                                     | `tailwind`             |
 | `turso`, `libsql`, `edge database`, `distributed`, `sqld`                                                                                                  | `turso`                |
 | `zod`, `validación`, `schema`, `parse`, `z.object`, `z.string`                                                                                             | `zod`                  |
+| `better-auth`, `betterauth`, `auth.ts`, `autenticación`, `login`, `sign-up`, `OAuth`, `password reset`                                                                                  | `better-auth`        |
 | `changelog`, `release notes`, `cambios`, `versión`, `git tag`, `github release`                                                                            | `changelog`            |
 | `htmx`, `hx-get`, `hx-post`, `hx-trigger`, `hipermedia`, `hypermedia`                                                                                      | `htmx`                 |
 | `skill`, `skill-creator`, `meta-audit`, `health-skill-audit`, `crear skill`, `auditar skill`, `overlap`, `duplicación`, `solapamiento`, `consolidar skill` | `skills-manager`       |
