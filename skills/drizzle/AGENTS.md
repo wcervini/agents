@@ -23,6 +23,8 @@
 | **Transacciones** | `db.transaction(async (tx) => { ... })` — usa `tx` para queries atómicas |
 | **Prepared** | `const stmt = db.select().from(t).where(eq(...)).prepare('name'); await stmt.execute(...)` |
 | **Better Auth** | `import { drizzleAdapter } from 'better-auth/adapters/drizzle'` + `provider: 'pg' \| 'mysql' \| 'sqlite'` |
+| **drizzle-zod** | `npm i drizzle-zod` → `createInsertSchema(tabla, {campo: refinamiento})` / `createSelectSchema(tabla)` |
+| **SQLite modes** | Booleano: `integer('c', { mode: 'boolean' })` · Fecha: `integer('c', { mode: 'timestamp_ms' })` (ms) / `{ mode: 'timestamp' }` (seg) |
 | **Ref. raíz** | https://orm.drizzle.team/docs/ |
 
 ---
@@ -66,6 +68,8 @@ PlanetScale  → @planetscale/database → drizzle-orm/planetscale-serverless
 - **NEVER** olvidar pasar `{ relations }` a `drizzle()` si usas `db.query`
 - **NEVER** confundir `$inferSelect` (lectura) con `$inferInsert` (escritura)
 - **NEVER** ignorar la columna `id` al hacer `.where()` — usa `eq(users.id, id)`
+- **NEVER** definir el schema con `CREATE TABLE` suelto si el proyecto usa Drizzle — el schema vive en `sqliteTable`/`pgTable`
+- **NEVER** usar `TEXT` ISO o `DATETIME` para fechas/booleanos en SQLite — usa `integer` con `{ mode }`
 
 ---
 
@@ -178,6 +182,7 @@ export const auth = betterAuth({
 - **AND/OR:** `and(eq(a, 1), or(eq(b, 2), eq(b, 3)))`
 - **Batch:** múltiples `db.batch([...])` con drivers compatibles (libsql, neon)
 - **`$type<T>()`** para columnas especiales: `jsonb().$type<string[]>()`
+- **Schema en Drizzle, validación derivada:** SQLite se maneja vía Drizzle ORM (no SQL puro suelto) y los schemas zod se derivan con `createInsertSchema`/`createSelectSchema` (drizzle-zod)
 
 ## References
 

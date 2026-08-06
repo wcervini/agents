@@ -114,6 +114,50 @@ type InsertUserAlt = InferInsertModel<typeof users>;
 - `$inferSelect` → fila leída de la base (todas las columnas como definidas)
 - `$inferInsert` → fila a insertar (PK y columnas con default son opcionales)
 
+## SQLite: fechas y booleanos (integer + mode)
+
+SQLite **no tiene tipos nativos `BOOLEAN` ni `DATETIME`**. En stacks con Drizzle, SQLite se maneja vía el ORM (no con SQL puro suelto), y Drizzle abstrae esos tipos con `integer` + `mode`:
+
+| Concepto | Columna Drizzle | SQLite subyacente | JS |
+|----------|----------------|-------------------|----|
+| Booleano | `integer('col', { mode: 'boolean' })` | `INTEGER` 0/1 | `true`/`false` |
+| Fecha | `integer('col', { mode: 'timestamp_ms' })` | `INTEGER` Unix ms | `Date` |
+| Fecha | `integer('col', { mode: 'timestamp' })` | `INTEGER` Unix seg | `Date` |
+
+```typescript
+import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
+
+export const user = sqliteTable('user', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+});
+```
+
+> ❌ NO uses `TEXT` ISO (string ISO) ni `DATETIME` para fechas/booleanos en el schema de Drizzle.
+
+## Derivar schemas zod (drizzle-zod)
+
+Drizzle es la fuente de verdad del esquema; los schemas de validación zod se **derivan** con `drizzle-zod`:
+
+```js
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { productos } from '../db/schema.js';
+
+export const insertarProductoSchema = createInsertSchema(productos, {
+  precio: z.number().int().positive('El precio debe ser mayor a 0'),
+  stock: z.number().int().min(0, 'El stock no puede ser negativo'),
+});
+
+export const seleccionarProductoSchema = createSelectSchema(productos);
+```
+
+- `createInsertSchema(tabla, refinamientos?)` → schema para INSERT (el 2º argumento sobreescribe solo campos concretos)
+- `createSelectSchema(tabla)` → schema para SELECT, sin sobreescribir
+- Ver skill `zod` → `references/integrations.md` para el detalle de la integración
+
 ## Buenas prácticas
 
 - Una tabla por archivo o agrupar en `src/db/schema.ts`

@@ -1,12 +1,12 @@
 ---
 name: zod
-description: Zod specialist for schema validation, data parsing, and static type inference in TypeScript. Use when defining validation schemas (z.object, z.string, z.enum, z.array, z.union, z.record, z.tuple), parsing untrusted input (.parse/.safeParse/.parseAsync), refining with .refine/.superRefine/.transform/z.pipe, inferring types (z.infer/z.input/z.output), handling ZodError (errorMap, issue.path, z.treeifyError/z.flattenError), coercing (z.coerce), recursion (z.lazy), generating JSON Schema/OpenAPI (z.toJSONSchema), or integrating with Astro (astro/zod), React Hook Form (@hookform/resolvers/zod), tRPC, Express/Fastify, Prisma or Drizzle. Not for general TypeScript type design, ORM schema definition, or non-validation data modeling.
+description: Zod specialist for schema validation, data parsing, and static type inference in TypeScript. Use when defining validation schemas (z.object, z.string, z.enum, z.array, z.union, z.record, z.tuple), parsing untrusted input (.parse/.safeParse/.parseAsync), refining with .refine/.superRefine/.transform/z.pipe, inferring types (z.infer/z.input/z.output), handling ZodError (errorMap, issue.path, z.treeifyError/z.flattenError), coercing (z.coerce), recursion (z.lazy), generating JSON Schema/OpenAPI (z.toJSONSchema), or integrating with Astro (astro/zod), React Hook Form (@hookform/resolvers/zod), tRPC, Express/Fastify, Prisma or Drizzle (drizzle-zod: createInsertSchema/createSelectSchema). Not for general TypeScript type design, ORM schema definition, or non-validation data modeling.
 license: MIT
 metadata:
   author: delineas
   version: "1.0.0"
   category: validation
-  tags: zod, validation, schema, parsing, type-inference, typescript, safeParse, zoderror, refine, transform, coerce, discriminated-union, openapi, json-schema, react-hook-form, trpc, astro-zod, express, fastify
+  tags: zod, validation, schema, parsing, type-inference, typescript, safeParse, zoderror, refine, transform, coerce, discriminated-union, openapi, json-schema, react-hook-form, trpc, astro-zod, express, fastify, drizzle-zod, drizzle
 ---
 
 # Zod Specialist
@@ -29,7 +29,8 @@ Activa esta skill cuando:
 - Manejar errores de validación (`ZodError`, `errorMap`, `issue.path`, `z.treeifyError`, `z.flattenError`)
 - Coercionar tipos (`z.coerce`), recursión (`z.lazy`), intersecciones (`z.intersection`)
 - Generar JSON Schema / OpenAPI (`z.toJSONSchema`)
-- Integrar con Astro (`astro/zod`), React Hook Form, tRPC, Express/Fastify, Prisma/Drizzle
+- Integrar con Astro (`astro/zod`), React Hook Form, tRPC, Express/Fastify, Prisma/Drizzle (drizzle-zod)
+- Derivar schemas desde tablas Drizzle (`createInsertSchema`/`createSelectSchema` de `drizzle-zod`)
 
 ## Core Workflow
 
@@ -108,7 +109,7 @@ Carga la guía detallada según tu tarea:
 | Parsing | [references/parsing.md](references/parsing.md) | `.parse`, `.safeParse`, `.parseAsync`, `.safeParseAsync`, primitivas, composición |
 | Inferencia de tipos | [references/type-inference.md](references/type-inference.md) | `z.infer`, `z.input`, `z.output`, `z.coerce`, `z.lazy`, `z.record`, `z.tuple`, `z.intersection` |
 | Manejo de errores | [references/errors.md](references/errors.md) | `ZodError`, `errorMap`, `issue.path`, `z.treeifyError`, `z.flattenError`, mensajes personalizados |
-| Integraciones | [references/integrations.md](references/integrations.md) | Astro `astro/zod`, React Hook Form, tRPC, Express/Fastify, Prisma/Drizzle, OpenAPI |
+| Integraciones | [references/integrations.md](references/integrations.md) | Astro `astro/zod`, React Hook Form, tRPC, Express/Fastify, Prisma/Drizzle (drizzle-zod), OpenAPI |
 
 ## Guidelines by Context
 
@@ -127,6 +128,7 @@ Reglas de contexto en `rules/`:
 - Proporcionar mensajes de error claros y personalizados (objeto de configuración)
 - Validar en el borde de la API (entrada de usuario) — nunca confiar en el cliente
 - En Astro, importar `z` desde `astro/zod` (NO del paquete `zod`)
+- En proyectos con Drizzle, derivar los schemas con `drizzle-zod` (`createInsertSchema`/`createSelectSchema`) en vez de escribir `z.object` manual
 - Usar `z.coerce.date()` para fechas de frontmatter/strings
 - Usar `z.discriminatedUnion` cuando haya un campo discriminador
 - Usar `z.treeifyError`/`z.flattenError` (v4) en lugar de `.format()`/`.flatten()` (deprecados)
@@ -139,6 +141,7 @@ Reglas de contexto en `rules/`:
 - Usar `.parse()` en flujos donde el fallo debe manejarse con gracia (usa `safeParse`)
 - Inventar métodos de validación/transformación sin verificar en zod.dev
 - Importar `z` desde `zod` en Astro (usar `astro/zod`)
+- Escribir `z.object` manual para tablas Drizzle existentes — deriva con `drizzle-zod`
 - Usar `.format()`/`.flatten()` en Zod v4 (deprecados → `z.treeifyError`/`z.flattenError`)
 - Confiar en datos sin validar (trust no input)
 
@@ -151,6 +154,8 @@ npm i zod        # npm
 pnpm add zod     # pnpm
 bun add zod      # bun
 ```
+
+> **Versión:** zod v4 estable (4.0.1+). Verifica la versión del proyecto vía Context7 antes de dar código.
 
 > **Zod es solo una librería, NO tiene CLI.** No hay binario `zod` para ejecutar.
 
@@ -182,6 +187,23 @@ if (result.success) {
   console.error(result.error.issues);
 }
 ```
+
+### drizzle-zod (derivar schemas desde tablas Drizzle)
+
+```js
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { productos } from '../db/schema.js';
+
+export const insertarProductoSchema = createInsertSchema(productos, {
+  precio: z.number().int().positive('El precio debe ser mayor a 0'),
+});
+
+export const seleccionarProductoSchema = createSelectSchema(productos);
+```
+
+- El 2º argumento de `createInsertSchema` sobreescribe solo campos concretos
+- Detalle completo en `references/integrations.md`
 
 ### Refinamiento y transformación
 

@@ -16,6 +16,7 @@ globs:
 - Proporcionar mensajes de error claros y personalizados
 - Validar en el borde de la API — nunca confiar en datos del cliente
 - En Astro, importar `z` desde `astro/zod` (NO del paquete `zod`)
+- En proyectos con Drizzle, derivar los schemas con `drizzle-zod` (`createInsertSchema`/`createSelectSchema`) en vez de `z.object` manual
 - Usar `z.coerce.date()` para fechas que llegan como string
 - Usar `z.discriminatedUnion` cuando haya un campo discriminador literal
 - Usar `z.treeifyError`/`z.flattenError` (v4) en lugar de `.format()`/`.flatten()`
@@ -28,6 +29,7 @@ globs:
 - Usar `.parse()` en flujos donde el fallo debe manejarse con gracia (usa `safeParse`)
 - Inventar métodos de validación/transformación sin verificar en zod.dev
 - Importar `z` desde `zod` en Astro (usar `astro/zod`)
+- Escribir `z.object` manual para tablas Drizzle existentes — deriva con `drizzle-zod`
 - Usar `.format()`/`.flatten()` en Zod v4 (deprecados)
 - Confiar en datos sin validar
 

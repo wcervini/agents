@@ -1,6 +1,6 @@
 # Zod Cheatsheet
 
-**Version:** 1.0.0 | **Zod 4.x** | **Updated:** 2026-08-06 | **Author**: delineas
+**Version:** 1.0.0 | **Zod 4.x (4.0.1+ estable)** | **Updated:** 2026-08-06 | **Author**: delineas
 
 ---
 
@@ -23,6 +23,7 @@
 | **React Hook Form** | `import { zodResolver } from '@hookform/resolvers/zod'`; `useForm({ resolver: zodResolver(schema) })` |
 | **tRPC** | Schemas Zod directamente como `input`/`output` de procedimientos |
 | **Express/Fastify** | Validar `req.body`/payload con `schema.safeParse` en el borde de la API |
+| **drizzle-zod** | `npm i drizzle-zod` → `createInsertSchema(tabla, {campo: refinamiento})` / `createSelectSchema(tabla)` — derivar schemas de tablas Drizzle |
 | **Ref. raíz** | https://zod.dev/ — verificar cualquier API dudosa |
 
 ---
@@ -155,6 +156,7 @@ import { z } from 'zod/mini'; // variante ligera de Zod 4, sin algunos features
 | Express | `zod` + validación manual | `const r = schema.safeParse(req.body); if (!r.success) return 400` |
 | Fastify | `zod` + plugin | `fastify.post('/x', { schema: { body: schema } })` (con `fastify-type-provider-zod`) |
 | OpenAPI/JSON Schema | `zod` / `zod-openapi` | `z.toJSONSchema(schema)` o `.openapi({...})` |
+| Drizzle (drizzle-zod) | `drizzle-zod` | `createInsertSchema(productos, { precio: z.number() })` / `createSelectSchema(productos)` |
 
 ---
 
@@ -169,6 +171,7 @@ import { z } from 'zod/mini'; // variante ligera de Zod 4, sin algunos features
 - **`.catch()`** — valor de respaldo ante error: `z.string().catch('default')`
 - **`.default()`** — valor por defecto solo si el input es `undefined`
 - **`.brand()`** — tipos nominales: `z.string().brand<'UserId'>()`
+- **Drizzle (drizzle-zod)** — deriva schemas de tablas: `createInsertSchema(tabla, { campo: refinamiento })` (INSERT) / `createSelectSchema(tabla)` (SELECT); no escribas `z.object` a mano
 
 ## References
 

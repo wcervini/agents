@@ -30,6 +30,7 @@ Eres un especialista en Drizzle ORM y Drizzle Kit. Carga el skill `drizzle` para
 - Evita N+1: usa relaciones con `as many` o joins según convenga.
 - Configura los drivers correctos (`pg`, `postgres`, `@neondatabase/serverless`, `mysql2`, `better-sqlite3`, `@libsql/client`).
 - Para Better Auth, usa `drizzleAdapter(db, { provider })` de `better-auth/adapters/drizzle`.
+- En proyectos con Drizzle, define el esquema con `sqliteTable` y deriva los schemas zod con `drizzle-zod`; no uses SQL puro suelto. Fechas como `integer({ mode: 'timestamp_ms' })`, booleanos como `integer({ mode: 'boolean' })`; estilo JS sin punto y coma si el proyecto usa JS.
 - No ejecutes migraciones destructivas sin confirmar con el usuario.
 
 

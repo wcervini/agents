@@ -7,6 +7,7 @@ Cómo integrar Drizzle ORM con frameworks, servicios edge y Better Auth.
 | Integración | Paquete/API | Ejemplo mínimo |
 |-------------|-------------|----------------|
 | Better Auth | `better-auth/adapters/drizzle` | `database: drizzleAdapter(db, { provider: 'pg' })` |
+| drizzle-zod | `drizzle-zod` | `createInsertSchema(tabla, { campo: refinamiento })` / `createSelectSchema(tabla)` |
 | tRPC | `drizzle-orm` directo | `query: async () => db.select().from(users)` |
 | Hono | `drizzle-orm` directo | handler con `db` importada |
 | Astro | `drizzle-orm/*` drivers | `src/pages/api/*.ts` con `db` |
@@ -40,6 +41,26 @@ npx drizzle-kit generate && npx drizzle-kit migrate
 ```
 
 > Ver skills `better-auth-best-practices` y `create-auth` para la configuración completa de Better Auth.
+
+## drizzle-zod — derivar schemas de validación
+
+El esquema vive en Drizzle (fuente de verdad) y los schemas zod se derivan de las tablas, sin `z.object` a mano:
+
+```js
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
+import { productos } from '../db/schema.js';
+
+export const insertarProductoSchema = createInsertSchema(productos, {
+  precio: z.number().int().positive('El precio debe ser mayor a 0'),
+});
+
+export const seleccionarProductoSchema = createSelectSchema(productos);
+```
+
+- `npm i drizzle-zod`
+- El 2º argumento de `createInsertSchema` sobreescribe solo campos concretos (refinamientos, mensajes)
+- Ver skill `zod` → `references/integrations.md` para el detalle completo.
 
 ## Turso / LibSQL (edge)
 

@@ -1,12 +1,12 @@
 ---
 name: drizzle
-description: Drizzle ORM specialist for type-safe SQL database work (SQLite, PostgreSQL, MySQL) using Drizzle ORM and Drizzle Kit. Use when defining schemas (pgTable/sqliteTable/mysqlTable, columns, indexes, foreign keys), configuring drizzle.config.ts (defineConfig, dialect, schema, out), running migrations (drizzle-kit generate/push/migrate/studio/check), inferring types (InferSelectModel/InferInsertModel/$inferSelect/$inferInsert), building queries (db.select/from/where/joins/and/or/inArray), CRUD (insert/update/delete), defining relations (defineRelations, relational queries db.query.findMany with), transactions (db.transaction), prepared statements (.prepare), or integrating with tRPC, Hono, Astro, Next.js, Turso/LibSQL, Neon, PlanetScale or Better Auth (drizzleAdapter). Not for raw SQL without an ORM, Prisma-specific workflows, or non-database tasks.
+description: Drizzle ORM specialist for type-safe SQL database work (SQLite, PostgreSQL, MySQL) using Drizzle ORM and Drizzle Kit. Use when defining schemas (pgTable/sqliteTable/mysqlTable, columns, indexes, foreign keys), configuring drizzle.config.ts (defineConfig, dialect, schema, out), running migrations (drizzle-kit generate/push/migrate/studio/check), inferring types (InferSelectModel/InferInsertModel/$inferSelect/$inferInsert), building queries (db.select/from/where/joins/and/or/inArray), CRUD (insert/update/delete), defining relations (defineRelations, relational queries db.query.findMany with), transactions (db.transaction), prepared statements (.prepare), deriving zod schemas from tables with drizzle-zod (createInsertSchema/createSelectSchema), or integrating with tRPC, Hono, Astro, Next.js, Turso/LibSQL, Neon, PlanetScale or Better Auth (drizzleAdapter). Not for raw SQL without an ORM, Prisma-specific workflows, or non-database tasks.
 license: MIT
 metadata:
   author: delineas
   version: "1.0.0"
   category: database
-  tags: drizzle, drizzle-orm, drizzle-kit, orm, sql, postgresql, mysql, sqlite, turso, libsql, neon, migrations, type-safe, relations, transactions, better-auth, trpc, hono, astro-db, prepared-statements
+  tags: drizzle, drizzle-orm, drizzle-kit, drizzle-zod, orm, sql, postgresql, mysql, sqlite, turso, libsql, neon, migrations, type-safe, relations, transactions, better-auth, trpc, hono, astro-db, prepared-statements
 ---
 
 # Drizzle ORM Specialist
@@ -31,6 +31,7 @@ Activa esta skill cuando:
 - Definir relaciones (`defineRelations` + relational queries `db.query...findMany({ with })`)
 - Ejecutar transacciones (`db.transaction`) y batch
 - Integrar con tRPC, Hono, Astro, Next.js, Turso/LibSQL, Neon, PlanetScale o Better Auth
+- Derivar schemas zod desde tablas (`createInsertSchema`/`createSelectSchema` de `drizzle-zod`)
 - Optimizar queries (prepared statements, evitar N+1)
 
 ## Core Workflow
@@ -79,6 +80,55 @@ Necesitas datos anidados (posts con su autor, users con sus posts)?
 ├── Sí → defineRelations + db.query...findMany({ with: { author: true } })
 └── No → SQL-style con joins (db.select().from().leftJoin())
 ```
+
+### Drizzle como fuente de verdad + drizzle-zod
+
+> **Convención del stack de referencia (Astro + Drizzle + SQLite + Better Auth):** el esquema de la base **vive en Drizzle** (`sqliteTable`), nunca en SQL puro suelto. Los schemas de validación zod se **derivan** de las tablas con `drizzle-zod`, en vez de escribir `z.object` a mano. En proyectos JS, estilo sin punto y coma y comillas simples.
+
+```js
+// src/db/schema.js — fuente de verdad del esquema
+import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
+
+export const productos = sqliteTable('productos', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  codigo: text('codigo').notNull().unique(),
+  nombre: text('nombre').notNull(),
+  precio: integer('precio').notNull(),
+  stock: integer('stock').notNull().default(0),
+  categoria: text('categoria').notNull(),
+})
+```
+
+```js
+// src/schemas/producto.js — schemas zod DERIVADOS (drizzle-zod)
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod'
+import { productos } from '../db/schema.js'
+
+export const insertarProductoSchema = createInsertSchema(productos, {
+  precio: z.number().int().positive('El precio debe ser mayor a 0'),
+  stock: z.number().int().min(0, 'El stock no puede ser negativo'),
+})
+
+export const seleccionarProductoSchema = createSelectSchema(productos)
+```
+
+- `createInsertSchema(tabla, { campo: refinamiento })` → schema zod para INSERT; el 2º argumento **sobreescribe solo campos concretos** (refinamientos/validación extra)
+- `createSelectSchema(tabla)` → schema zod para SELECT (lectura), sin sobreescribir
+- Uso típico: `input: insertarProductoSchema` en Astro actions, `schema.safeParse(body)` en APIs
+- Requiere `npm i drizzle-zod`; compatible con zod v4 (4.0.1+)
+
+### SQLite: fechas y booleanos (se maneja vía Drizzle, no con SQL puro)
+
+En este stack, **SQLite se maneja vía Drizzle ORM, no con SQL puro** (sin `CREATE TABLE` suelto). SQLite no tiene tipos nativos `BOOLEAN` ni `DATETIME`; Drizzle los abstrae con `integer` + `mode`:
+
+| Convención | Columna Drizzle | Semántica |
+|------------|-----------------|-----------|
+| Booleano | `integer('col', { mode: 'boolean' })` | 0/1 en SQLite, `true`/`false` en JS |
+| Fecha (ms) | `integer('col', { mode: 'timestamp_ms' })` | Unix ms, `Date` en JS |
+| Fecha (seg) | `integer('col', { mode: 'timestamp' })` | Unix seg, `Date` en JS |
+
+> ❌ NO uses `TEXT` ISO ni `DATETIME` para fechas/booleanos en el schema de Drizzle.
 
 ## Reference Documentation
 
