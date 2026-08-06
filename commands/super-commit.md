@@ -24,4 +24,4 @@ $ARGUMENTS
 - No hacer force push
 - Antes de commit, revisar archivos sensibles (`.env`, tokens, credenciales). Si aparece alguno, parar y preguntar
 - No revertir cambios existentes
-- Solicita apoyo al sub-agente git para la composicion del mensaje para cada caso
+- Para la composicion del mensaje de cada commit, solicita apoyo a la skill `msg-commit` (agrupacion por intencion y commits semanticos con gitmoji)
